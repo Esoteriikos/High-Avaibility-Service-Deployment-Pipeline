@@ -10,6 +10,22 @@ Enterprise-grade microservice architecture demonstrating:
 - Monitoring: Prometheus metrics collection + Grafana visualization
 - Resilience: Health checks, auto-healing, graceful degradation
 
+
+## Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | FastAPI 0.109.0 |
+| ASGI Server | Uvicorn 0.27.0 |
+| Container | Docker |
+| Orchestration | Kubernetes |
+| Load Balancer | NGINX 1.25 |
+| Metrics | Prometheus 2.48.0 |
+| Visualization | Grafana 10.2.2 |
+| Load Testing | Locust 2.20.0 |
+| CI/CD | GitHub Actions |
+
+
 ## Performance Metrics
 
 | Metric | Target | Achieved |
@@ -636,20 +652,6 @@ kubectl rollout undo deployment/fastapi-deployment --to-revision=<number>
     format: 'sarif'
     output: 'trivy-results.sarif'
 ```
-
-## Technology Stack
-
-| Layer | Technology |
-|-------|------------|
-| Framework | FastAPI 0.109.0 |
-| ASGI Server | Uvicorn 0.27.0 |
-| Container | Docker |
-| Orchestration | Kubernetes |
-| Load Balancer | NGINX 1.25 |
-| Metrics | Prometheus 2.48.0 |
-| Visualization | Grafana 10.2.2 |
-| Load Testing | Locust 2.20.0 |
-| CI/CD | GitHub Actions |
 
 ## Design Patterns
 
