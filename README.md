@@ -5,10 +5,9 @@ Production-ready FastAPI microservice cluster achieving 99.9% uptime and handlin
 ## Overview
 
 Enterprise-grade microservice architecture demonstrating:
-- High availability: 4-10 auto-scaling FastAPI replicas
+- High availability: Auto-scaling FastAPI replicas
 - Load balancing: NGINX reverse proxy with round-robin distribution
 - Monitoring: Prometheus metrics collection + Grafana visualization
-- Performance: <200ms average latency at 5,500+ RPS
 - Resilience: Health checks, auto-healing, graceful degradation
 
 ## Performance Metrics
@@ -31,9 +30,9 @@ Client → NGINX LB (2 replicas) → FastAPI Service → FastAPI Pods (6-20)
 ```
 
 **Components:**
-- FastAPI pods: 4 Uvicorn workers each, 250m-500m CPU, 256Mi-512Mi memory
+- FastAPI pods: 4-6 Uvicorn workers each, 250m-500m CPU, 256Mi-512Mi memory
 - NGINX: Round-robin load balancing, keepalive connections
-- HPA: Auto-scales 4-10 pods based on CPU (70%) and memory (80%)
+- HPA: Auto-scales 6-20 pods based on CPU (70%) and memory (80%)
 - Prometheus: 15s scrape interval, 30-day retention
 - Grafana: Pre-configured dashboards
 
@@ -174,14 +173,6 @@ helpers.bat test-heavy    # Heavy test with HTML report
 - Concurrent connections: Simulates real user behavior
 - Automatic retry on failures
 
-**Expected Results (10K users):**
-- Total RPS: ~5,500 requests/second
-- Average latency: ~180ms
-- P95 latency: ~450ms
-- P99 latency: ~850ms
-- Success rate: >99.9%
-- Failed requests: <0.1%
-
 ## Monitoring
 
 ### Prometheus Metrics
@@ -225,8 +216,8 @@ Pre-configured dashboard shows:
 ### Auto-Scaling (HPA)
 
 Configured in `k8s/hpa.yaml`:
-- Min replicas: 4
-- Max replicas: 10
+- Min replicas: 6
+- Max replicas: 20
 - CPU threshold: 70%
 - Memory threshold: 80%
 - Scale up: Immediate (100% or 2 pods per 15s)
@@ -610,24 +601,6 @@ kubectl rollout history deployment/fastapi-deployment
 kubectl rollout undo deployment/fastapi-deployment --to-revision=<number>
 ```
 
-**Via GitHub Actions:**
-- Revert the commit in Git
-- Push to trigger new deployment
-- Or manually trigger workflow with previous commit SHA
-
-### CI/CD Best Practices
-
-1. **Always test locally** before pushing
-2. **Use feature branches** for development
-3. **Require PR reviews** before merging
-4. **Enable branch protection** on main/develop
-5. **Monitor staging** before promoting to production
-6. **Keep secrets secure** - rotate regularly
-7. **Review load test results** before production deployment
-8. **Set up alerting** for deployment failures
-9. **Document rollback procedures**
-10. **Test rollback process** in staging
-
 ### Customization
 
 **Add More Tests:**
@@ -678,23 +651,6 @@ kubectl rollout undo deployment/fastapi-deployment --to-revision=<number>
 | Load Testing | Locust 2.20.0 |
 | CI/CD | GitHub Actions |
 
-## Capacity Planning
-
-**Single pod capacity:**
-- Workers: 4
-- RPS: ~300-400 (100ms avg latency)
-- Concurrent connections: ~1,000-1,200
-
-**4-pod cluster:**
-- Total workers: 16
-- RPS: ~1,200-1,600
-- Concurrent connections: ~4,000-5,000
-
-**10-pod cluster (max):**
-- Total workers: 40
-- RPS: ~3,000-4,000
-- Concurrent connections: ~10,000-12,000
-
 ## Design Patterns
 
 1. **Circuit Breaker**: NGINX fails fast on unhealthy backends
@@ -720,7 +676,7 @@ kubectl rollout undo deployment/fastapi-deployment --to-revision=<number>
 **NGINX pod down:**
 - Service routes to remaining NGINX pod
 - Kubernetes restarts failed pod
-- No user impact (2 replicas)
+- No user impact
 
 **Node failure:**
 - Pods rescheduled to other nodes
